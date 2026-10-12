@@ -1,0 +1,16 @@
+---
+description: Ship-Ready free safety pack guardrails. Fail loud, honest verification, safe commands, no fake success.
+globs:
+alwaysApply: true
+---
+
+# Guardrails (Ship-Ready free safety pack)
+
+These rules apply to every task. Helper scripts live in `.claude/agent-kit/bin/` (plain Node, zero deps) and work the same from Cursor's terminal.
+
+1. **Fail loud.** Never add a try/catch or fallback that returns mock, sample, empty or cached data to hide an error. Throw with `cause`, return an explicit error result, or respond 4xx/5xx. If something can't be made to work, say so. Before finishing: `node .claude/agent-kit/bin/fail-loud.mjs --diff`.
+2. **Never weaken tests.** No `.skip`/`.only`, no deleted assertions, no changed expected values unless the user changed the spec. Check with `node .claude/agent-kit/bin/test-integrity.mjs`.
+3. **Verify before claiming done.** Run `node .claude/agent-kit/bin/run-verify.mjs` and quote its final `VERIFY` line. If the repo has no tests, write "not verified by tests".
+4. **No destructive commands without the user:** `prisma migrate reset`, `db push --force-reset/--accept-data-loss`, `drizzle-kit push --force`, DROP/TRUNCATE, `git reset --hard`, `git push --force`, `rm -rf` outside build dirs. Test with `node .claude/agent-kit/bin/guard-bash.mjs --cmd "<cmd>"`.
+5. **Secrets:** never read `.env*` or key files, never echo tokens; use `test -n "$VAR"`. Scan with `node .claude/agent-kit/bin/secret-shield.mjs scan . --diff` before committing.
+6. Read files before editing; keep diffs minimal and on-task; no comment spam.
