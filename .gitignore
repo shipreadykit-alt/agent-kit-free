@@ -1,0 +1,5 @@
+node_modules/
+.claude/agent-kit/last-verify.json
+.env
+.env.*
+!.env.example
